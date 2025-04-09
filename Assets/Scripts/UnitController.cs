@@ -30,7 +30,7 @@ public class UnitController : MonoBehaviour
                     case "Terrain":
                         if(unitSelected)
                         {
-                            Vector2Int targetCoords = hit.transform.GetComponent<Labeller>().coords;
+                            Vector2Int targetCoords = hit.transform.GetComponent<Labeller>().coords * gridManager.UnityGridSize;
                             Vector2Int startCoords = new Vector2Int((int)selectedUnit.position.x, (int)selectedUnit.position.z) / gridManager.UnityGridSize;
 
                             selectedUnit.transform.position = new Vector3(targetCoords.x, selectedUnit.position.y, targetCoords.y);

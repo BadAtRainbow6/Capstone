@@ -6,6 +6,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] Vector2Int gridSize;
     [SerializeField] int unityGridSize;
 
+    //[SerializeField];
+
     [SerializeField] bool premade;
     [SerializeField] GameObject[] tiles;
     public int UnityGridSize {  get { return unityGridSize; } }
@@ -15,17 +17,51 @@ public class GridManager : MonoBehaviour
 
     private void Awake()
     {
-        for (int x =  0; x < gridSize.x; x++)
+        CreateGrid();
+    }
+
+    public Node GetNode(Vector2Int coords)
+    {
+        if (grid.ContainsKey(coords)) return grid[coords];
+
+        return null;
+    }
+
+    public void BlockNode(Vector2Int coords)
+    {
+        if (grid.ContainsKey(coords)) grid[coords].walkable = false;
+    }
+
+    public void ResetNodes()
+    {
+        foreach(KeyValuePair<Vector2Int, Node> coord in grid)
+        {
+            coord.Value.conectedTo = null;
+            coord.Value.explored = false;
+            coord.Value.path = false;
+        }
+    }
+
+    public Vector2Int GetCoordsFromPos(Vector3 pos)
+    {
+        Vector2Int coords = new Vector2Int();
+
+
+    }
+
+    private void CreateGrid()
+    {
+        for (int x = 0; x < gridSize.x; x++)
         {
             for (int y = 0; y < gridSize.y; y++)
             {
-                Vector2Int coords = new Vector2Int(x, y);
-                grid.Add(coords, new Node(coords));
-
                 if (!premade)
                 {
                     Instantiate(tiles[Random.Range(0, tiles.Length - 1)], new Vector3(x * unityGridSize, 0, y * unityGridSize), Quaternion.identity);
                 }
+
+                Vector2Int coords = new Vector2Int(x, y);
+                grid.Add(coords, new Node(coords, true));
             }
         }
     }

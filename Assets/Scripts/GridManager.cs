@@ -6,6 +6,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] Vector2Int gridSize;
     [SerializeField] int unityGridSize;
 
+    [SerializeField] bool premade;
     [SerializeField] GameObject[] tiles;
     public int UnityGridSize {  get { return unityGridSize; } }
 
@@ -21,7 +22,10 @@ public class GridManager : MonoBehaviour
                 Vector2Int coords = new Vector2Int(x, y);
                 grid.Add(coords, new Node(coords));
 
-                Instantiate(tiles[Random.Range(0, tiles.Length - 1)], new Vector3(x * unityGridSize, 0, y * unityGridSize), Quaternion.identity);
+                if (!premade)
+                {
+                    Instantiate(tiles[Random.Range(0, tiles.Length - 1)], new Vector3(x * unityGridSize, 0, y * unityGridSize), Quaternion.identity);
+                }
             }
         }
     }

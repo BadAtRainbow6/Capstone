@@ -3,10 +3,10 @@ using UnityEngine;
 public class Node
 {
     public Vector2Int coords;
-    public bool walkable;
+    public bool walkable = true;
     public bool explored;
     public bool path;
-    public Node conectedTo;
+    public Node connectedTo;
 
     public Node(Vector2Int coords, bool walkable)
     {

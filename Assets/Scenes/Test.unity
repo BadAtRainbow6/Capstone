@@ -250,6 +250,7 @@ GameObject:
   m_Component:
   - component: {fileID: 305100904}
   - component: {fileID: 305100905}
+  - component: {fileID: 305100906}
   m_Layer: 0
   m_Name: UnitController
   m_TagString: Untagged
@@ -285,6 +286,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 1
+--- !u!114 &305100906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305100903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e91b03795aa6b8d43b1f09f19d7e7cca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startCoords: {x: 0, y: 0}
+  targetCoords: {x: 0, y: 0}
 --- !u!1 &555643935
 GameObject:
   m_ObjectHideFlags: 0

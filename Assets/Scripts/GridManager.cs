@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class GridManager : MonoBehaviour
     public int UnityGridSize {  get { return unityGridSize; } }
 
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
-    Dictionary<Vector2Int, Node> Grid {  get { return grid; } }
+    public Dictionary<Vector2Int, Node> Grid {  get { return grid; } }
 
     private void Awake()
     {
@@ -36,7 +37,7 @@ public class GridManager : MonoBehaviour
     {
         foreach(KeyValuePair<Vector2Int, Node> coord in grid)
         {
-            coord.Value.conectedTo = null;
+            coord.Value.connectedTo = null;
             coord.Value.explored = false;
             coord.Value.path = false;
         }
@@ -46,7 +47,20 @@ public class GridManager : MonoBehaviour
     {
         Vector2Int coords = new Vector2Int();
 
+        coords.x = Mathf.RoundToInt(pos.x / UnityGridSize);
+        coords.y = Mathf.RoundToInt(pos.z / UnityGridSize);
 
+        return coords;
+    }
+
+    public Vector3 GetPosFromCoords(Vector2Int coords)
+    {
+        Vector3 pos = new Vector3();
+
+        pos.x = coords.x * UnityGridSize;
+        pos.z = coords.y * UnityGridSize;
+
+        return pos;
     }
 
     private void CreateGrid()

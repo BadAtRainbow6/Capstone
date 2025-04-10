@@ -1,3 +1,5 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitController : MonoBehaviour
@@ -7,11 +9,17 @@ public class UnitController : MonoBehaviour
     Transform selectedUnit;
     bool unitSelected = false;
 
+    bool unitMoving = false;
+
+    List<Node> path = new List<Node>();
+
     GridManager gridManager;
+    PathFinding pathFinder;
 
     void Start()
     {
         gridManager = FindFirstObjectByType<GridManager>();
+        pathFinder = FindFirstObjectByType<PathFinding>();
     }
 
     void Update()
@@ -23,17 +31,17 @@ public class UnitController : MonoBehaviour
 
             bool hasHit = Physics.Raycast(ray, out hit);
 
-            if (hasHit)
+            if (hasHit && !unitMoving)
             {
                 switch(hit.transform.tag)
                 {
                     case "Terrain":
                         if(unitSelected)
                         {
-                            Vector2Int targetCoords = hit.transform.GetComponent<Labeller>().coords * gridManager.UnityGridSize;
+                            Vector2Int targetCoords = hit.transform.GetComponent<Tile>().coords * gridManager.UnityGridSize;
                             Vector2Int startCoords = new Vector2Int((int)selectedUnit.position.x, (int)selectedUnit.position.z) / gridManager.UnityGridSize;
-
-                            selectedUnit.transform.position = new Vector3(targetCoords.x, selectedUnit.position.y, targetCoords.y);
+                            pathFinder.SetNewDestination(startCoords, targetCoords);
+                            RecalculatePath(true);
                         }
                         break;
                     case "Unit":
@@ -52,5 +60,43 @@ public class UnitController : MonoBehaviour
                 unitSelected = false;
             }
         }
+    }
+
+    void RecalculatePath(bool resetPath)
+    {
+        Vector2Int coords = new Vector2Int();
+        if (resetPath)
+        {
+            coords = pathFinder.StartCoords;
+        }
+        else
+        {
+            coords = gridManager.GetCoordsFromPos(transform.position);
+        }
+        StopAllCoroutines();
+        path.Clear();
+        path = pathFinder.GetNewPath(coords);
+        StartCoroutine(FollowPath());
+    }
+
+    IEnumerator<WaitForEndOfFrame> FollowPath()
+    {
+        unitMoving = true;
+        for (int i = 1; i < path.Count; i++)
+        {
+            Vector3 startPosition = selectedUnit.position;
+            Vector3 endPosition = gridManager.GetPosFromCoords(path[i].coords);
+
+            float travelPercent = 0f;
+
+            while(travelPercent < 1f)
+            {
+                travelPercent += Time.deltaTime * movementSpeed;
+                selectedUnit.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
+                yield return new WaitForEndOfFrame();
+            }
+        }
+        gridManager.Grid[gridManager.GetCoordsFromPos(selectedUnit.position)].walkable = false;
+        unitMoving = false;
     }
 }

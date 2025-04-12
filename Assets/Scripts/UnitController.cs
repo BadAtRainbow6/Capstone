@@ -54,7 +54,7 @@ public class UnitController : MonoBehaviour
                         break;
                 }
             }
-            else
+            else if (!unitMoving)
             {
                 selectedUnit = null;
                 unitSelected = false;

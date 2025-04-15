@@ -53,11 +53,12 @@ public class GridManager : MonoBehaviour
         return coords;
     }
 
-    public Vector3 GetPosFromCoords(Vector2Int coords)
+    public Vector3 GetPosFromCoords(Vector2Int coords, float y)
     {
         Vector3 pos = new Vector3();
 
         pos.x = coords.x * UnityGridSize;
+        pos.y = y;
         pos.z = coords.y * UnityGridSize;
 
         return pos;

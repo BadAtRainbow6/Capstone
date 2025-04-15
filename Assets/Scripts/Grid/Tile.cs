@@ -11,6 +11,7 @@ public class Tile : MonoBehaviour
     void Start()
     {
         SetCoords();
+        gridManager.Grid.Add(coords, new Node(coords, blocked));
 
         if(blocked)
         {

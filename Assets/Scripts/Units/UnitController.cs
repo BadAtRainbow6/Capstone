@@ -6,7 +6,7 @@ public class UnitController : MonoBehaviour
 {
     [SerializeField] float movementSpeed = 1f;
 
-    Transform selectedUnit;
+    Unit selectedUnit;
     bool unitSelected = false;
 
     bool unitMoving = false;
@@ -39,13 +39,13 @@ public class UnitController : MonoBehaviour
                         if(unitSelected)
                         {
                             Vector2Int targetCoords = hit.transform.GetComponent<Tile>().coords * gridManager.UnityGridSize;
-                            Vector2Int startCoords = new Vector2Int((int)selectedUnit.position.x, (int)selectedUnit.position.z) / gridManager.UnityGridSize;
+                            Vector2Int startCoords = new Vector2Int((int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.z) / gridManager.UnityGridSize;
                             pathFinder.SetNewDestination(startCoords, targetCoords);
                             RecalculatePath(true);
                         }
                         break;
                     case "Unit":
-                        selectedUnit = hit.transform;
+                        selectedUnit = hit.transform.GetComponent<Unit>();
                         unitSelected = true;
                         break;
                     default:
@@ -84,19 +84,19 @@ public class UnitController : MonoBehaviour
         unitMoving = true;
         for (int i = 1; i < path.Count; i++)
         {
-            Vector3 startPosition = selectedUnit.position;
-            Vector3 endPosition = gridManager.GetPosFromCoords(path[i].coords);
+            Vector3 startPosition = selectedUnit.transform.position;
+            Vector3 endPosition = gridManager.GetPosFromCoords(path[i].coords, selectedUnit.transform.position.y);
 
             float travelPercent = 0f;
 
             while(travelPercent < 1f)
             {
                 travelPercent += Time.deltaTime * movementSpeed;
-                selectedUnit.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
+                selectedUnit.transform.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
                 yield return new WaitForEndOfFrame();
             }
         }
-        gridManager.Grid[gridManager.GetCoordsFromPos(selectedUnit.position)].walkable = false;
+        gridManager.Grid[gridManager.GetCoordsFromPos(selectedUnit.transform.position)].walkable = false;
         unitMoving = false;
     }
 }

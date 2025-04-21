@@ -331,7 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSize: {x: 5, y: 5}
   unityGridSize: 1
-  premade: 1
+  premade: 0
   tiles:
   - {fileID: 4636508677060477418, guid: 771f2d5366a430246b9c4b61ea5e553d, type: 3}
 --- !u!4 &555643937
@@ -393,8 +393,9 @@ GameObject:
   - component: {fileID: 961739752}
   - component: {fileID: 961739751}
   - component: {fileID: 961739750}
+  - component: {fileID: 961739754}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Player1
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -518,6 +519,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+--- !u!114 &961739754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961739749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbd97e678b59c6e4492970bcf04b4b7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  army: []
+  speed: 20
+  sensitivity: 1
 --- !u!1 &1160234425
 GameObject:
   m_ObjectHideFlags: 0

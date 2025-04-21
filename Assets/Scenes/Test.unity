@@ -532,7 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   army: []
-  speed: 20
+  speed: 10
   sensitivity: 1
 --- !u!1 &1160234425
 GameObject:

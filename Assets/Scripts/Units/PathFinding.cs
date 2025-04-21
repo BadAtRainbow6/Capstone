@@ -124,6 +124,5 @@ public class PathFinding : MonoBehaviour
         this.targetCoords = targetCoords;
         startNode = grid[this.startCoords];
         targetNode = grid[this.targetCoords];
-        GetNewPath();
     }
 }

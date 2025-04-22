@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Main%20Menu/MainMenu.uss?fileID=7433441132597879392&amp;guid=89044a25dde15bf4d8debd4371312273&amp;type=3#MainMenu" />
+    <ui:VisualElement name="Panel" class="panel" style="flex-grow: 1; align-items: center; align-content: center; justify-content: center; background-image: url(&quot;project://database/Assets/UI/Main%20Menu/maxresdefault.jpg?fileID=2800000&amp;guid=ab0dfe3db20d9ea4c9c3cee5ed70078b&amp;type=3#maxresdefault&quot;);">
+        <ui:VisualElement name="Title" style="flex-grow: 1; flex-basis: auto; font-size: 200px; align-items: center; justify-content: flex-start; align-self: center; transform-origin: top; max-height: 300px; flex-direction: column;">
+            <ui:Label text="Scrimage" name="Title" />
+        </ui:VisualElement>
+        <ui:GroupBox name="ButtonBox" class="box" style="max-height: 400px; width: 200px; height: 200px;">
+            <ui:Button text="Start" name="StartButton" selectable="false" class="menuButton" />
+            <ui:Button text="Quit" name="QuitButton" focusable="false" class="menuButton" style="align-content: auto;" />
+        </ui:GroupBox>
+    </ui:VisualElement>
+</ui:UXML>

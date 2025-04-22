@@ -1,0 +1,73 @@
+.panel {
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-color: rgb(113, 113, 113);
+    align-items: auto;
+    justify-content: space-evenly;
+    align-content: auto;
+}
+
+.box {
+    justify-content: flex-start;
+    align-items: stretch;
+    align-self: auto;
+    background-color: rgba(55, 55, 55, 0.73);
+    align-content: auto;
+    width: 400px;
+    height: auto;
+    max-height: 400px;
+    flex-shrink: 1;
+    border-top-width: 10px;
+    border-right-width: 10px;
+    border-bottom-width: 10px;
+    border-left-width: 10px;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+.menuButton {
+    border-top-width: 10px;
+    border-right-width: 10px;
+    border-bottom-width: 10px;
+    border-left-width: 10px;
+    left: auto;
+    right: auto;
+    width: auto;
+    height: auto;
+    -unity-background-scale-mode: stretch-to-fill;
+    transform-origin: center;
+    flex-shrink: 0;
+    flex-grow: 1;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    background-color: rgb(183, 183, 183);
+    border-left-color: rgb(108, 108, 108);
+    border-right-color: rgb(108, 108, 108);
+    border-top-color: rgb(108, 108, 108);
+    border-bottom-color: rgb(108, 108, 108);
+    -unity-font-definition: url("project://database/Library/unity%20default%20resources?fileID=10102&guid=0000000000000000e000000000000000&type=0#LegacyRuntime");
+    font-size: 30px;
+}
+
+.menuButton:hover {
+    background-color: rgb(219, 219, 219);
+    border-left-color: rgb(173, 173, 173);
+    border-right-color: rgb(173, 173, 173);
+    border-top-color: rgb(173, 173, 173);
+    border-bottom-color: rgb(173, 173, 173);
+}
+
+.menuButton:active {
+    border-left-color: rgb(75, 75, 75);
+    border-right-color: rgb(75, 75, 75);
+    border-top-color: rgb(75, 75, 75);
+    border-bottom-color: rgb(75, 75, 75);
+    background-color: rgb(135, 135, 135);
+}

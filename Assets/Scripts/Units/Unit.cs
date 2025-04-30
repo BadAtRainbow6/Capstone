@@ -20,4 +20,10 @@ public class Unit : MonoBehaviour
     {
         
     }
+
+    void Die()
+    {
+        owner.army.Remove(this);
+        Destroy(this);
+    }
 }

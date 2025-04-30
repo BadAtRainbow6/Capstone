@@ -1,8 +1,9 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class UnitController : MonoBehaviour
+public class UnitController : NetworkBehaviour
 {
     [SerializeField] float movementSpeed = 1f;
 
@@ -16,6 +17,13 @@ public class UnitController : MonoBehaviour
     GridManager gridManager;
     PathFinding pathFinder;
 
+    public static UnitController Instance { get; private set; }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         gridManager = FindFirstObjectByType<GridManager>();
@@ -23,6 +31,11 @@ public class UnitController : MonoBehaviour
     }
 
     void Update()
+    {
+        PathFind();
+    }
+
+    void PathFind()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -33,15 +46,14 @@ public class UnitController : MonoBehaviour
 
             if (hasHit && !unitMoving)
             {
-                switch(hit.transform.tag)
+                switch (hit.transform.tag)
                 {
                     case "Terrain":
-                        if(unitSelected)
+                        if (unitSelected)
                         {
                             Vector2Int targetCoords = hit.transform.GetComponent<Tile>().coords * gridManager.UnityGridSize;
                             Vector2Int startCoords = new Vector2Int((int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.z) / gridManager.UnityGridSize;
-                            pathFinder.SetNewDestination(startCoords, targetCoords);
-                            RecalculatePath(true);
+                            RecalculatePathRpc(true, startCoords, targetCoords);
                         }
                         break;
                     case "Unit":
@@ -62,8 +74,11 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    void RecalculatePath(bool resetPath)
+    [Rpc(SendTo.Server)]
+    void RecalculatePathRpc(bool resetPath, Vector2Int startCoords, Vector2Int targetCoords)
     {
+        pathFinder.SetNewDestination(startCoords, targetCoords);
+
         Vector2Int coords = new Vector2Int();
         if (resetPath)
         {

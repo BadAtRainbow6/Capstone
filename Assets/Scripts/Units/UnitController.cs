@@ -52,7 +52,7 @@ public class UnitController : NetworkBehaviour
                         if (unitSelected)
                         {
                             Vector2Int targetCoords = hit.transform.GetComponent<Tile>().coords * gridManager.UnityGridSize;
-                            Vector2Int startCoords = new Vector2Int((int)selectedUnit.transform.position.x, (int)selectedUnit.transform.position.z) / gridManager.UnityGridSize;
+                            Vector2Int startCoords = new Vector2Int((int)Mathf.Round(selectedUnit.transform.position.x), (int)Mathf.Round(selectedUnit.transform.position.z)) / gridManager.UnityGridSize;
                             RecalculatePathRpc(true, startCoords, targetCoords);
                         }
                         break;

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using System;
 
 public class UnitController : NetworkBehaviour
 {
@@ -53,7 +54,7 @@ public class UnitController : NetworkBehaviour
                         {
                             Vector2Int targetCoords = hit.transform.GetComponent<Tile>().coords * gridManager.UnityGridSize;
                             Vector2Int startCoords = new Vector2Int((int)Mathf.Round(selectedUnit.transform.position.x), (int)Mathf.Round(selectedUnit.transform.position.z)) / gridManager.UnityGridSize;
-                            RecalculatePathRpc(true, startCoords, targetCoords);
+                            RecalculatePathRpc(true, startCoords, targetCoords, selectedUnit.transform.position);
                         }
                         break;
                     case "Unit":
@@ -75,8 +76,9 @@ public class UnitController : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    void RecalculatePathRpc(bool resetPath, Vector2Int startCoords, Vector2Int targetCoords)
+    void RecalculatePathRpc(bool resetPath, Vector2Int startCoords, Vector2Int targetCoords, Vector3 unitPos)
     {
+        FindUnit(unitPos);
         pathFinder.SetNewDestination(startCoords, targetCoords);
 
         Vector2Int coords = new Vector2Int();
@@ -92,6 +94,22 @@ public class UnitController : NetworkBehaviour
         path.Clear();
         path = pathFinder.GetNewPath(coords);
         StartCoroutine(FollowPath());
+    }
+
+    private void FindUnit(Vector3 unitPos)
+    {
+        Collider[] results = Physics.OverlapSphere(unitPos, 0.25f);
+        foreach(Collider result in results)
+        {
+            try
+            {
+                selectedUnit = result.GetComponent<Unit>();
+            }
+            catch(Exception e)
+            {
+                continue;
+            }
+        }
     }
 
     IEnumerator<WaitForEndOfFrame> FollowPath()

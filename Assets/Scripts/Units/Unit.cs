@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Netcode;
 
 public class Unit : MonoBehaviour
 {
@@ -10,16 +11,6 @@ public class Unit : MonoBehaviour
     int ID {  get { return id; } set { id = value; } }
 
     Player owner;
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-        
-    }
 
     void Die()
     {

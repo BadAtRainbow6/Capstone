@@ -14,7 +14,6 @@ public class PathFinding : MonoBehaviour
     Node targetNode;
     Node currentNode;
 
-
     Queue<Node> frontier = new Queue<Node>();
     Dictionary<Vector2Int, Node> reached = new Dictionary<Vector2Int, Node>();
 

@@ -1,12 +1,14 @@
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpawnPoint : MonoBehaviour
 {
-    [SerializeField] GameObject unit;
+    GameManager manager;
 
     private void Start()
     {
-        Instantiate(unit, transform);
+        manager = FindFirstObjectByType<GameManager>();
+        Instantiate(manager.playerOneArmy.First(), transform);
     }
 }

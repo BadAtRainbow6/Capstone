@@ -54,12 +54,16 @@ public class UnitController : NetworkBehaviour
                         {
                             Vector2Int targetCoords = hit.transform.GetComponent<Tile>().coords * gridManager.UnityGridSize;
                             Vector2Int startCoords = new Vector2Int((int)Mathf.Round(selectedUnit.transform.position.x), (int)Mathf.Round(selectedUnit.transform.position.z)) / gridManager.UnityGridSize;
-                            RecalculatePathRpc(true, startCoords, targetCoords, selectedUnit.transform.position);
+                            RecalculatePathRpc(true, startCoords, targetCoords, selectedUnit.transform.position, NetworkManager.IsHost);
                         }
                         break;
-                    case "Unit":
-                        selectedUnit = hit.transform.GetComponent<Unit>();
-                        unitSelected = true;
+                    case "Player1":
+                    case "Player2":
+                        if((IsHost && hit.transform.CompareTag("Player1")) || (!IsHost && hit.transform.CompareTag("Player2")))
+                        {
+                            selectedUnit = hit.transform.GetComponent<Unit>();
+                            unitSelected = true;
+                        }
                         break;
                     default:
                         selectedUnit = null;
@@ -76,9 +80,10 @@ public class UnitController : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server)]
-    void RecalculatePathRpc(bool resetPath, Vector2Int startCoords, Vector2Int targetCoords, Vector3 unitPos)
+    void RecalculatePathRpc(bool resetPath, Vector2Int startCoords, Vector2Int targetCoords, Vector3 unitPos, bool host)
     {
-        FindUnit(unitPos);
+        FindUnit(unitPos, host);
+
         pathFinder.SetNewDestination(startCoords, targetCoords);
 
         Vector2Int coords = new Vector2Int();
@@ -96,14 +101,18 @@ public class UnitController : NetworkBehaviour
         StartCoroutine(FollowPath());
     }
 
-    private void FindUnit(Vector3 unitPos)
+    private void FindUnit(Vector3 unitPos, bool host)
     {
         Collider[] results = Physics.OverlapSphere(unitPos, 0.25f);
         foreach(Collider result in results)
         {
             try
             {
-                selectedUnit = result.GetComponent<Unit>();
+                if((host && result.CompareTag("Player1")) || (!host && result.CompareTag("Player2")))
+                {
+                    selectedUnit = result.GetComponent<Unit>();
+                    break;
+                }
             }
             catch(Exception e)
             {

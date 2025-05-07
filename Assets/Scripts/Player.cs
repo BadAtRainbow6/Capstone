@@ -8,8 +8,6 @@ using Quaternion = UnityEngine.Quaternion;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] public List<Unit> army;
-
     [SerializeField] private float speed = 10f;
     [SerializeField] private float sensitivity = 10f;
 

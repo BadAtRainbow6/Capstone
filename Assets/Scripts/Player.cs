@@ -11,11 +11,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float speed = 10f;
     [SerializeField] private float sensitivity = 10f;
 
-    private void Start()
-    {
-
-    }
-
     private void Update()
     {
         CameraMovement();

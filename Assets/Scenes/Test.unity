@@ -714,6 +714,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1626826070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1626826071}
+  m_Layer: 0
+  m_Name: Player2Spawn1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1626826071
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626826070}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4, y: 0, z: 4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1672758047
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,8 +754,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1672758049}
-  - component: {fileID: 1672758048}
   - component: {fileID: 1672758050}
+  - component: {fileID: 1672758048}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -744,10 +775,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c8644ea4d99df241beb09915afbf327, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerOneArmy:
+  ShowTopMostFoldoutHeaderGroup: 1
+  playerOneChosen:
   - {fileID: 117750782248444381, guid: 0e5ef57e0b9c57c42a15318f15b29254, type: 3}
-  playerTwoArmy:
+  playerTwoChosen:
   - {fileID: 117750782248444381, guid: 0e5ef57e0b9c57c42a15318f15b29254, type: 3}
+  playerOneArmy: []
+  playerTwoArmy: []
+  pOneSpawnPoints:
+  - {fileID: 1784942411}
+  pTwoSpawnPoints:
+  - {fileID: 1626826071}
 --- !u!4 &1672758049
 Transform:
   m_ObjectHideFlags: 0
@@ -797,26 +835,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1784942411}
-  - component: {fileID: 1784942410}
   m_Layer: 0
-  m_Name: Spawn (0)
+  m_Name: Player1Spawn1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1784942410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1784942409}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cc3055bb005cdc4f8e0bca6034f9281, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1784942411
 Transform:
   m_ObjectHideFlags: 0
@@ -922,5 +947,6 @@ SceneRoots:
   - {fileID: 807438768}
   - {fileID: 1417332916}
   - {fileID: 1784942411}
+  - {fileID: 1626826071}
   - {fileID: 1144128633}
   - {fileID: 1672758049}

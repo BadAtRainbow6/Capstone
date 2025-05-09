@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class Tile : MonoBehaviour
+public class Tile : NetworkBehaviour
 {
     public Vector2Int coords;
 

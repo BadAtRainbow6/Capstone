@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class GridManager : MonoBehaviour
+public class GridManager : NetworkBehaviour
 {
     [SerializeField] Vector2Int gridSize;
     [SerializeField] int unityGridSize;
@@ -19,7 +20,11 @@ public class GridManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        CreateGrid();
+    }
+
+    private void Start()
+    {
+        NetworkManager.Singleton.OnServerStarted += OnServerStarted;
     }
 
     public Node GetNode(Vector2Int coords)
@@ -73,9 +78,16 @@ public class GridManager : MonoBehaviour
             {
                 if (!premade)
                 {
-                    Instantiate(tiles[Random.Range(0, tiles.Length - 1)], new Vector3(x * unityGridSize, 0, y * unityGridSize), Quaternion.identity);
+                    var obj = Instantiate(tiles[Random.Range(0, tiles.Length)], new Vector3(x * unityGridSize, 0, y * unityGridSize), Quaternion.identity);
+                    var netObj = obj.GetComponent<NetworkObject>();
+                    netObj.Spawn();
                 }
             }
         }
+    }
+
+    private void OnServerStarted()
+    {
+        CreateGrid();
     }
 }

@@ -19,6 +19,8 @@ public class GameManager : NetworkBehaviour
     public List<Transform> pOneSpawnPoints = new List<Transform>();
     public List<Transform> pTwoSpawnPoints = new List<Transform>();
 
+    public bool p1Turn = true;
+
     private void Awake()
     {
         Instance = this;
@@ -53,5 +55,46 @@ public class GameManager : NetworkBehaviour
                 playerTwoArmy.Add(obj);
             }
         }
+    }
+
+    public void SwapTurn()
+    {
+        List<Unit> army;
+        if (p1Turn) army = playerTwoArmy;
+        else army = playerOneArmy;
+
+        if(army.Count <= 0)
+        {
+            Application.Quit();
+        }
+        foreach (Unit unit in army)
+        {
+            if (unit.statusTimer[Unit.Status.POISONED] > 0)
+            {
+                unit.health -= Mathf.RoundToInt(unit.health / 10);
+                unit.statusTimer[Unit.Status.POISONED] -= 1;
+                unit.CheckDeath();
+            }
+        }
+        if (army.Count <= 0)
+        {
+            Application.Quit();
+        }
+        foreach(Unit unit in army)
+        {
+            if (unit.statusTimer[Unit.Status.STUNNED] > 0)
+            {
+                unit.remainingSpeed = 0;
+                unit.usedAbility = true;
+                unit.statusTimer[Unit.Status.STUNNED]--;
+            }
+            else
+            {
+                unit.remainingSpeed = unit.gridSpeed;
+                unit.usedAbility = false;
+            }
+            //unit.selectedAbility = null;
+        }
+        p1Turn = !p1Turn;
     }
 }

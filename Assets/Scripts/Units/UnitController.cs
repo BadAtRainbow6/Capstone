@@ -6,8 +6,6 @@ using System;
 
 public class UnitController : NetworkBehaviour
 {
-    [SerializeField] float movementSpeed = 1f;
-
     Unit selectedUnit;
     bool unitSelected = false;
 
@@ -59,6 +57,11 @@ public class UnitController : NetworkBehaviour
                         break;
                     case "Player1":
                     case "Player2":
+                        if(selectedUnit != null && selectedUnit.tag != hit.transform.tag)
+                        {
+                            pathFinder.SetNewDestination(gridManager.GetCoordsFromPos(selectedUnit.transform.position), gridManager.GetCoordsFromPos(hit.transform.position));
+                            selectedUnit.selectedAbility.Effect(selectedUnit, hit.transform.GetComponent<Unit>(), pathFinder.GetNewPath().Count - 1);
+                        }
                         if((IsHost && hit.transform.CompareTag("Player1")) || (!IsHost && hit.transform.CompareTag("Player2")))
                         {
                             selectedUnit = hit.transform.GetComponent<Unit>();
@@ -98,6 +101,10 @@ public class UnitController : NetworkBehaviour
         StopAllCoroutines();
         path.Clear();
         path = pathFinder.GetNewPath(coords);
+        if (selectedUnit.remainingSpeed < path.Count - 1)
+        {
+            return;
+        }
         StartCoroutine(FollowPath());
     }
 
@@ -114,7 +121,7 @@ public class UnitController : NetworkBehaviour
                     break;
                 }
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 continue;
             }
@@ -133,11 +140,12 @@ public class UnitController : NetworkBehaviour
 
             while(travelPercent < 1f)
             {
-                travelPercent += Time.deltaTime * movementSpeed;
+                travelPercent += Time.deltaTime * selectedUnit.movementSpeed;
                 selectedUnit.transform.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
                 yield return new WaitForEndOfFrame();
             }
         }
+        selectedUnit.remainingSpeed -= path.Count;
         gridManager.Grid[gridManager.GetCoordsFromPos(selectedUnit.transform.position)].walkable = false;
         unitMoving = false;
     }

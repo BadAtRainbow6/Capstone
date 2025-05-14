@@ -212,9 +212,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  health: 0
-  gridSpeed: 0
-  movementSpeed: 0
+  health: 50
+  gridSpeed: 3
+  movementSpeed: 1
+  remainingSpeed: 0
+  flying: 0
 --- !u!114 &7208728525270525683
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 1837901811976682495}
   - component: {fileID: 6557221258978150823}
   - component: {fileID: 5898822289681012648}
-  - component: {fileID: 117750782248444381}
+  - component: {fileID: 4479542105636231248}
   - component: {fileID: 7208728525270525683}
   - component: {fileID: 1178762592744371106}
   m_Layer: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &117750782248444381
+--- !u!114 &4479542105636231248
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -208,13 +208,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 9050095695601959331}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8047e757b75856d4eb87aa0474cdc3fa, type: 3}
+  m_Script: {fileID: 11500000, guid: 74f69e6411dad1f459ed7161931bcdd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  health: 0
-  gridSpeed: 0
-  movementSpeed: 0
+  health: 25
+  gridSpeed: 3
+  movementSpeed: 0.75
+  remainingSpeed: 0
+  flying: 0
+  selectedAbility: {fileID: 0}
 --- !u!114 &7208728525270525683
 MonoBehaviour:
   m_ObjectHideFlags: 0

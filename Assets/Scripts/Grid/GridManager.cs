@@ -15,6 +15,8 @@ public class GridManager : NetworkBehaviour
     Dictionary<Vector2Int, Node> grid = new Dictionary<Vector2Int, Node>();
     public Dictionary<Vector2Int, Node> Grid {  get { return grid; } }
 
+    GameManager gameManager;
+
     public static GridManager Instance { get; private set; }
 
     private void Awake()
@@ -25,6 +27,7 @@ public class GridManager : NetworkBehaviour
     private void Start()
     {
         NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+        gameManager = GameManager.Instance;
     }
 
     public Node GetNode(Vector2Int coords)

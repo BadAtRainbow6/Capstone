@@ -11,6 +11,8 @@ public class Unit : NetworkBehaviour
         STUNNED
     }
 
+    public int armyId;
+
     [SerializeField] public float health = 10.0f;
     [SerializeField] public float gridSpeed = 3.0f; // How many tiles a unit can move in a turn. Will be shown as "Speed" in game.
     [SerializeField] public float movementSpeed = 1.0f; // How fast the unit moves from tile to tile in real time.
@@ -32,37 +34,39 @@ public class Unit : NetworkBehaviour
     protected int id;
     int ID {  get { return id; } set { id = value; } }
 
-    private void Start()
-    {
-        gameManager = FindFirstObjectByType<GameManager>();
-        remainingSpeed = gridSpeed;
-        statusTimer.Add(Status.POISONED, 0);
-        statusTimer.Add(Status.STUNNED, 0);
-    }
-
     public void CheckDeath()
     {
         if(health <= 0)
         {
-            Die();
+            DieRpc();
         }
     }
 
-    void Die()
+    [Rpc(SendTo.Server)]
+    public void DieRpc()
     {
         if (CompareTag("Player1"))
         {
-            gameManager.playerOneArmy.Remove(this);
+            gameManager.playerOneArmy.RemoveAt(armyId);
         }
         else
         {
-            gameManager.playerTwoArmy.Remove(this);
+            gameManager.playerTwoArmy.RemoveAt(armyId);
         }
-        Destroy(gameObject);
+
+        if (IsServer)
+        {
+            var netObj = GetComponent<NetworkObject>();
+            netObj.Despawn(true);
+        }
     }
 
     public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn(); // Good practice
+
+        gameManager = FindFirstObjectByType<GameManager>();
+
         if (!string.IsNullOrEmpty(syncedTag.Value.ToString()))
         {
             gameObject.tag = syncedTag.Value.ToString();

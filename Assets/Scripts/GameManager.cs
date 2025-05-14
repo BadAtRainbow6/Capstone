@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Playmode;
@@ -19,6 +20,8 @@ public class GameManager : NetworkBehaviour
     public List<Transform> pOneSpawnPoints = new List<Transform>();
     public List<Transform> pTwoSpawnPoints = new List<Transform>();
 
+    GridManager gridManager;
+
     public bool p1Turn = true;
 
     private void Awake()
@@ -29,6 +32,7 @@ public class GameManager : NetworkBehaviour
     void Start()
     {
         NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+        gridManager = GridManager.Instance;
     }
 
     private void OnServerStarted()
@@ -41,6 +45,8 @@ public class GameManager : NetworkBehaviour
                 var netObj = obj.GetComponent<NetworkObject>();
                 netObj.Spawn();
 
+                obj.armyId = i;
+
                 obj.GetComponent<Unit>().SetTagOnServer("Player1");
                 playerOneArmy.Add(obj);
             }
@@ -51,9 +57,13 @@ public class GameManager : NetworkBehaviour
                 var netObj = obj.GetComponent<NetworkObject>();
                 netObj.Spawn();
 
+                obj.armyId = i;
+
                 obj.GetComponent<Unit>().SetTagOnServer("Player2");
                 playerTwoArmy.Add(obj);
             }
+
+            StartCoroutine(DelayedBlocking());
         }
     }
 
@@ -67,7 +77,7 @@ public class GameManager : NetworkBehaviour
         {
             Application.Quit();
         }
-        foreach (Unit unit in army)
+        foreach (Unit unit in new List<Unit>(army))
         {
             if (unit.statusTimer[Unit.Status.POISONED] > 0)
             {
@@ -80,7 +90,7 @@ public class GameManager : NetworkBehaviour
         {
             Application.Quit();
         }
-        foreach(Unit unit in army)
+        foreach(Unit unit in new List<Unit>(army))
         {
             if (unit.statusTimer[Unit.Status.STUNNED] > 0)
             {
@@ -96,5 +106,21 @@ public class GameManager : NetworkBehaviour
             //unit.selectedAbility = null;
         }
         p1Turn = !p1Turn;
+    }
+
+    private IEnumerator DelayedBlocking()
+    {
+        // Wait one frame
+        yield return null;
+
+        // Now safe to proceed
+        foreach (Unit unit in playerOneArmy)
+        {
+            gridManager.BlockNode(gridManager.GetCoordsFromPos(unit.transform.position));
+        }
+        foreach (Unit unit in playerTwoArmy)
+        {
+            gridManager.BlockNode(gridManager.GetCoordsFromPos(unit.transform.position));
+        }
     }
 }

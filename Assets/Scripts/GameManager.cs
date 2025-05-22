@@ -6,6 +6,7 @@ using Unity.Multiplayer.Playmode;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class GameManager : NetworkBehaviour
 {
@@ -22,6 +23,10 @@ public class GameManager : NetworkBehaviour
 
     GridManager gridManager;
 
+    UIDocument doc;
+    public VisualElement ui;
+    public Button nextTurnButton;
+
     public bool p1Turn = true;
 
     private void Awake()
@@ -32,7 +37,15 @@ public class GameManager : NetworkBehaviour
     void Start()
     {
         NetworkManager.Singleton.OnServerStarted += OnServerStarted;
+        NetworkManager.Singleton.OnClientStarted += OnClientStarted;
         gridManager = GridManager.Instance;
+        doc = FindFirstObjectByType<UIDocument>();
+        doc.rootVisualElement.schedule.Execute(() =>
+        {
+            ui = doc.rootVisualElement;
+
+            nextTurnButton = ui.Q<Button>("EndTurnButton");
+        }).ExecuteLater(0);
     }
 
     private void OnServerStarted()
@@ -65,6 +78,11 @@ public class GameManager : NetworkBehaviour
 
             StartCoroutine(DelayedBlocking());
         }
+    }
+
+    private void OnClientStarted()
+    {
+        NextTurnText();
     }
 
     public void SwapTurn()
@@ -103,9 +121,22 @@ public class GameManager : NetworkBehaviour
                 unit.remainingSpeed = unit.gridSpeed;
                 unit.usedAbility = false;
             }
-            //unit.selectedAbility = null;
+            unit.selectedAbility = null;
         }
         p1Turn = !p1Turn;
+        NextTurnText();
+    }
+
+    void NextTurnText()
+    {
+        if ((p1Turn && IsHost) || (!p1Turn && !IsHost))
+        {
+            nextTurnButton.text = "End Your Turn";
+        }
+        else
+        {
+            nextTurnButton.text = "Wait For Your Turn";
+        }
     }
 
     private IEnumerator DelayedBlocking()

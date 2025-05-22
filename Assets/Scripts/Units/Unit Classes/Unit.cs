@@ -67,6 +67,9 @@ public class Unit : NetworkBehaviour
 
         gameManager = FindFirstObjectByType<GameManager>();
 
+        statusTimer.Add(Status.POISONED, 0);
+        statusTimer.Add(Status.STUNNED, 0);
+
         if (!string.IsNullOrEmpty(syncedTag.Value.ToString()))
         {
             gameObject.tag = syncedTag.Value.ToString();

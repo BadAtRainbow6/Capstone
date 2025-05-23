@@ -6,9 +6,11 @@ public class Claw : Ability
 {
     public Claw()
     {
+        abilityName = "Claw";
         maxCD = 1;
         curCD = 1;
-        charges = 1;
+        maxCharges = 1;
+        curCharges = 1;
         range = 1;
     }
 
@@ -21,6 +23,7 @@ public class Claw : Ability
         }
         target.health -= 8;
         target.CheckDeath();
+        Debug.Log(abilityName);
         return true;
     }
 }

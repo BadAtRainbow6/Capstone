@@ -3,6 +3,8 @@
     <engine:VisualElement name="Panel" class="panel" style="flex-grow: 1; bottom: auto;">
         <engine:VisualElement name="ButtonBox" class="buttonBox" style="flex-grow: 1; flex-basis: auto; flex-shrink: 1;">
             <engine:Button text="End Turn" name="EndTurnButton" class="endTurnBtn" />
+            <engine:Button text="Ability 1" name="Ability1Button" class="abilityButton" />
+            <engine:Button text="Ability 2" name="Ability2Button" class="abilityButton" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

@@ -6,8 +6,8 @@ using System;
 
 public class UnitController : NetworkBehaviour
 {
-    Unit selectedUnit;
-    bool unitSelected = false;
+    public Unit selectedUnit;
+    public bool unitSelected = false;
 
     bool unitMoving = false;
 
@@ -15,6 +15,7 @@ public class UnitController : NetworkBehaviour
 
     GridManager gridManager;
     PathFinding pathFinder;
+    GameManager gm;
 
     public static UnitController Instance { get; private set; }
 
@@ -27,6 +28,7 @@ public class UnitController : NetworkBehaviour
     {
         gridManager = FindFirstObjectByType<GridManager>();
         pathFinder = FindFirstObjectByType<PathFinding>();
+        gm = GameManager.Instance;
     }
 
     void Update()
@@ -43,7 +45,7 @@ public class UnitController : NetworkBehaviour
 
             bool hasHit = Physics.Raycast(ray, out hit);
 
-            if (hasHit && !unitMoving)
+            if (hasHit && !unitMoving && ((gm.p1Turn.Value && IsHost) || (!gm.p1Turn.Value && !IsHost)))
             {
                 switch (hit.transform.tag)
                 {
@@ -61,6 +63,7 @@ public class UnitController : NetworkBehaviour
                         {
                             pathFinder.SetNewDestination(gridManager.GetCoordsFromPos(selectedUnit.transform.position), gridManager.GetCoordsFromPos(hit.transform.position));
                             selectedUnit.selectedAbility.Effect(selectedUnit, hit.transform.GetComponent<Unit>(), pathFinder.GetNewPath().Count - 1);
+                            selectedUnit.usedAbility = true;
                         }
                         if((IsHost && hit.transform.CompareTag("Player1")) || (!IsHost && hit.transform.CompareTag("Player2")))
                         {
@@ -145,7 +148,7 @@ public class UnitController : NetworkBehaviour
                 yield return new WaitForEndOfFrame();
             }
         }
-        selectedUnit.remainingSpeed -= path.Count;
+        selectedUnit.remainingSpeed -= path.Count - 1;
         gridManager.Grid[gridManager.GetCoordsFromPos(selectedUnit.transform.position)].walkable = false;
         unitMoving = false;
     }

@@ -1,10 +1,12 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Multiplayer.Playmode;
 using Unity.Netcode;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -22,12 +24,13 @@ public class GameManager : NetworkBehaviour
     public List<Transform> pTwoSpawnPoints = new List<Transform>();
 
     GridManager gridManager;
+    UnitController unitController;
 
     UIDocument doc;
     public VisualElement ui;
     public Button nextTurnButton;
 
-    public bool p1Turn = true;
+    public NetworkVariable<bool> p1Turn = new NetworkVariable<bool>(true);
 
     private void Awake()
     {
@@ -39,6 +42,8 @@ public class GameManager : NetworkBehaviour
         NetworkManager.Singleton.OnServerStarted += OnServerStarted;
         NetworkManager.Singleton.OnClientStarted += OnClientStarted;
         gridManager = GridManager.Instance;
+        unitController = UnitController.Instance;
+
         doc = FindFirstObjectByType<UIDocument>();
         doc.rootVisualElement.schedule.Execute(() =>
         {
@@ -46,6 +51,11 @@ public class GameManager : NetworkBehaviour
 
             nextTurnButton = ui.Q<Button>("EndTurnButton");
         }).ExecuteLater(0);
+
+        p1Turn.OnValueChanged += (oldVal, newVal) =>
+        {
+            NextTurn();
+        };
     }
 
     private void OnServerStarted()
@@ -82,20 +92,25 @@ public class GameManager : NetworkBehaviour
 
     private void OnClientStarted()
     {
-        NextTurnText();
+        NextTurn();
     }
 
-    public void SwapTurn()
+    [Rpc(SendTo.Server)]
+    public void SwapTurnRpc()
     {
         List<Unit> army;
-        if (p1Turn) army = playerTwoArmy;
+        if (p1Turn.Value) army = playerTwoArmy;
         else army = playerOneArmy;
 
         if(army.Count <= 0)
         {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
+#endif
         }
-        foreach (Unit unit in new List<Unit>(army))
+        foreach (Unit unit in army)
         {
             if (unit.statusTimer[Unit.Status.POISONED] > 0)
             {
@@ -106,9 +121,13 @@ public class GameManager : NetworkBehaviour
         }
         if (army.Count <= 0)
         {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
+#endif
         }
-        foreach(Unit unit in new List<Unit>(army))
+        foreach (Unit unit in army)
         {
             if (unit.statusTimer[Unit.Status.STUNNED] > 0)
             {
@@ -123,20 +142,23 @@ public class GameManager : NetworkBehaviour
             }
             unit.selectedAbility = null;
         }
-        p1Turn = !p1Turn;
-        NextTurnText();
+        p1Turn.Value = !p1Turn.Value;
     }
 
-    void NextTurnText()
+    void NextTurn()
     {
-        if ((p1Turn && IsHost) || (!p1Turn && !IsHost))
+        if ((p1Turn.Value && IsHost) || (!p1Turn.Value && !IsHost))
         {
+            nextTurnButton.SetEnabled(true);
             nextTurnButton.text = "End Your Turn";
         }
         else
         {
+            nextTurnButton.SetEnabled(false);
             nextTurnButton.text = "Wait For Your Turn";
         }
+        unitController.selectedUnit = null;
+        unitController.unitSelected = false;
     }
 
     private IEnumerator DelayedBlocking()
@@ -153,5 +175,20 @@ public class GameManager : NetworkBehaviour
         {
             gridManager.BlockNode(gridManager.GetCoordsFromPos(unit.transform.position));
         }
+    }
+
+    public bool SetSelectedAbility(int abilityID)
+    {
+        if(unitController.selectedUnit != null)
+        {
+            unitController.selectedUnit.selectedAbility = unitController.selectedUnit.GetAbilityFromID(abilityID);
+            Debug.Log(unitController.selectedUnit.selectedAbility.name);
+            return true;
+        }
+        else
+        {
+            Debug.Log("No unit selected.");
+            return false;
+        }        
     }
 }

@@ -5,8 +5,8 @@ public class ManEater : Unit
 {
     private void Start()
     {
-        remainingSpeed = 8;
+        remainingSpeed = gridSpeed;
         abilities.Add(new Claw());
-        selectedAbility = abilities[0];
+        abilities.Add(new Poison());
     }
 }

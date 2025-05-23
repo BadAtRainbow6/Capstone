@@ -8,6 +8,8 @@ public class GameUIController : NetworkBehaviour
     public VisualElement ui;
 
     public Button nextTurnButton;
+    public Button ability1Button;
+    public Button ability2Button;
 
     UIDocument doc;
 
@@ -25,7 +27,13 @@ public class GameUIController : NetworkBehaviour
             ui = doc.rootVisualElement;
 
             nextTurnButton = ui.Q<Button>("EndTurnButton");
-            nextTurnButton.clicked += TurnPassClicked ;
+            nextTurnButton.clicked += TurnPassClicked;
+
+            ability1Button = ui.Q<Button>("Ability1Button");
+            ability1Button.clicked += Ability1Clicked;
+
+            ability2Button = ui.Q<Button>("Ability2Button");
+            ability2Button.clicked += Ability2Clicked;
 
         }).ExecuteLater(0);
 
@@ -39,6 +47,16 @@ public class GameUIController : NetworkBehaviour
 
     public void TurnPassClicked()
     {
-        gameManager.SwapTurn();
+        gameManager.SwapTurnRpc();
+    }
+
+    public void Ability1Clicked()
+    {
+        gameManager.SetSelectedAbility(0);
+    }
+
+    public void Ability2Clicked()
+    {
+        gameManager.SetSelectedAbility(1);
     }
 }

@@ -22,7 +22,7 @@ public class Unit : NetworkBehaviour
 
     public bool flying;
 
-    protected List<Ability> abilities = new List<Ability>();
+    protected List<Ability> abilities = new List<Ability>(); 
     public Ability selectedAbility = null;
     public bool usedAbility = false;
 
@@ -34,6 +34,11 @@ public class Unit : NetworkBehaviour
     protected int id;
     int ID {  get { return id; } set { id = value; } }
 
+    public Ability GetAbilityFromID(int id)
+    {
+        return abilities[id];
+    }
+    
     public void CheckDeath()
     {
         if(health <= 0)

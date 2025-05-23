@@ -12,11 +12,13 @@
     transform-origin: bottom;
     flex-shrink: 1;
     flex-grow: 1;
-    flex-direction: column;
+    flex-direction: row;
     bottom: auto;
     top: 75%;
     color: rgb(27, 27, 27);
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: auto;
 }
 
 .endTurnBtn {
@@ -31,4 +33,13 @@
     height: 25%;
     padding-left: 0;
     margin-left: 5%;
+    padding-right: 0;
+    margin-right: 5%;
+}
+
+.abilityButton {
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 10%;
+    height: 50%;
 }

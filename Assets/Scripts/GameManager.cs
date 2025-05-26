@@ -29,6 +29,8 @@ public class GameManager : NetworkBehaviour
     UIDocument doc;
     public VisualElement ui;
     public Button nextTurnButton;
+    public Button ability1Button;
+    public Button ability2Button;
 
     public NetworkVariable<bool> p1Turn = new NetworkVariable<bool>(true);
 
@@ -50,6 +52,8 @@ public class GameManager : NetworkBehaviour
             ui = doc.rootVisualElement;
 
             nextTurnButton = ui.Q<Button>("EndTurnButton");
+            ability1Button = ui.Q<Button>("Ability1Button");
+            ability2Button = ui.Q<Button>("Ability2Button");
         }).ExecuteLater(0);
 
         p1Turn.OnValueChanged += (oldVal, newVal) =>
@@ -93,6 +97,7 @@ public class GameManager : NetworkBehaviour
     private void OnClientStarted()
     {
         NextTurn();
+        SetButtonText();
     }
 
     [Rpc(SendTo.Server)]
@@ -190,5 +195,23 @@ public class GameManager : NetworkBehaviour
             Debug.Log("No unit selected.");
             return false;
         }        
+    }
+    
+    public void SetButtonText()
+    {
+        if(unitController.selectedUnit != null)
+        {
+            ability1Button.text = unitController.selectedUnit.GetAbilityFromID(0).abilityName;
+            ability2Button.text = unitController.selectedUnit.GetAbilityFromID(1).abilityName;
+            ability1Button.SetEnabled(true);
+            ability2Button.SetEnabled(true);
+        }
+        else
+        {
+            ability1Button.text = "";
+            ability2Button.text = "";
+            ability1Button.SetEnabled(false);
+            ability2Button.SetEnabled(false);
+        }
     }
 }

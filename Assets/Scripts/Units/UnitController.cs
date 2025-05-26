@@ -69,11 +69,13 @@ public class UnitController : NetworkBehaviour
                         {
                             selectedUnit = hit.transform.GetComponent<Unit>();
                             unitSelected = true;
+                            gm.SetButtonText();
                         }
                         break;
                     default:
                         selectedUnit = null;
                         unitSelected = false;
+                        gm.SetButtonText();
                         break;
                 }
             }
@@ -81,6 +83,7 @@ public class UnitController : NetworkBehaviour
             {
                 selectedUnit = null;
                 unitSelected = false;
+                gm.SetButtonText();
             }
         }
     }

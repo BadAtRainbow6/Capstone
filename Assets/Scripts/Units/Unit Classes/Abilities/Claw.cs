@@ -16,14 +16,14 @@ public class Claw : Ability
 
     public override bool Effect(Unit user, Unit target, int enemyRange)
     {
-        if (target.flying == true || enemyRange > range)
+        if (target.flying == true || enemyRange > range || enemyRange == 0)
         {
-            print("Invalid Target");
+            Debug.Log("Invalid Target");
             return false;
         }
-        target.health -= 8;
-        target.CheckDeath();
-        Debug.Log(abilityName);
+        target.SetHealthRpc(target.GetHealth() - 8);
+        target.CheckDeathRpc();
+        Debug.Log(abilityName + " went off.");
         return true;
     }
 }

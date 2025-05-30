@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class ManEater : Unit
 {
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        remainingSpeed = gridSpeed;
+        base.OnNetworkSpawn();
+
+        SetRemainingSpeedRpc(GetGridSpeed());
         abilities.Add(new Claw());
         abilities.Add(new Poison());
     }

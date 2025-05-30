@@ -117,11 +117,11 @@ public class GameManager : NetworkBehaviour
         }
         foreach (Unit unit in army)
         {
-            if (unit.statusTimer[Unit.Status.POISONED] > 0)
+            if (unit.GetPoisonedTurns() > 0)
             {
-                unit.health -= Mathf.RoundToInt(unit.health / 10);
-                unit.statusTimer[Unit.Status.POISONED] -= 1;
-                unit.CheckDeath();
+                unit.SetHealthRpc(unit.GetHealth() - Mathf.RoundToInt(unit.GetHealth() / 10));
+                unit.SetPoisonedTurnsRpc(unit.GetPoisonedTurns() - 1);
+                unit.CheckDeathRpc();
             }
         }
         if (army.Count <= 0)
@@ -134,18 +134,19 @@ public class GameManager : NetworkBehaviour
         }
         foreach (Unit unit in army)
         {
-            if (unit.statusTimer[Unit.Status.STUNNED] > 0)
+            if (unit.GetStunnedTurns() > 0)
             {
-                unit.remainingSpeed = 0;
-                unit.usedAbility = true;
-                unit.statusTimer[Unit.Status.STUNNED]--;
+                unit.SetRemainingSpeedRpc(0);
+                unit.SetUsedAbilityRpc(true);
+                unit.SetStunnedTurnsRpc(unit.GetStunnedTurns() - 1);
             }
             else
             {
-                unit.remainingSpeed = unit.gridSpeed;
-                unit.usedAbility = false;
+                unit.SetRemainingSpeedRpc(unit.GetGridSpeed());
+                unit.SetUsedAbilityRpc(false);
             }
             unit.selectedAbility = null;
+            unit.abilityID = -1;
         }
         p1Turn.Value = !p1Turn.Value;
     }
@@ -187,7 +188,7 @@ public class GameManager : NetworkBehaviour
         if(unitController.selectedUnit != null)
         {
             unitController.selectedUnit.selectedAbility = unitController.selectedUnit.GetAbilityFromID(abilityID);
-            Debug.Log(unitController.selectedUnit.selectedAbility.name);
+            Debug.Log(unitController.selectedUnit.selectedAbility.abilityName);
             return true;
         }
         else

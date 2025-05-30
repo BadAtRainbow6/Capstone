@@ -2,7 +2,7 @@ using Unity.VisualScripting;
 using UnityEditorInternal;
 using UnityEngine;
 
-public abstract class Ability : MonoBehaviour
+public abstract class Ability : ScriptableObject
 {
     public string abilityName { get; protected set; }
 

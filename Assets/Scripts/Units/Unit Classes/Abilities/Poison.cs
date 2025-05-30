@@ -14,13 +14,13 @@ public class Poison : Ability
 
     public override bool Effect(Unit user, Unit target, int enemyRange)
     {
-        if(enemyRange > range || (curCD > 0 && curCharges <= 0))
+        if(enemyRange > range || (curCD > 0 && curCharges <= 0) || enemyRange == 0)
         {
             Debug.Log("Invalid Target");
             return false;
         }
-        target.statusTimer[Unit.Status.POISONED] += 3;
-        Debug.Log(abilityName);
+        target.SetStunnedTurnsRpc(target.GetStunnedTurns() + 3);
+        Debug.Log(abilityName + " went off.");
         return true;
     }
 }

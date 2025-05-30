@@ -1,8 +1,12 @@
-using NUnit.Framework;
-using System.Collections.Generic;
-using UnityEngine;
-using Unity.Netcode;
 using System;
+using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using static Unit;
+using static UnityEngine.Rendering.DebugUI;
 
 public class UnitController : NetworkBehaviour
 {
@@ -45,6 +49,11 @@ public class UnitController : NetworkBehaviour
 
             bool hasHit = Physics.Raycast(ray, out hit);
 
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             if (hasHit && !unitMoving && ((gm.p1Turn.Value && IsHost) || (!gm.p1Turn.Value && !IsHost)))
             {
                 switch (hit.transform.tag)
@@ -59,13 +68,17 @@ public class UnitController : NetworkBehaviour
                         break;
                     case "Player1":
                     case "Player2":
-                        if(selectedUnit != null && selectedUnit.tag != hit.transform.tag)
+                        if (selectedUnit != null && selectedUnit.tag != hit.transform.tag && !selectedUnit.GetUsedAbility())
                         {
                             pathFinder.SetNewDestination(gridManager.GetCoordsFromPos(selectedUnit.transform.position), gridManager.GetCoordsFromPos(hit.transform.position));
-                            selectedUnit.selectedAbility.Effect(selectedUnit, hit.transform.GetComponent<Unit>(), pathFinder.GetNewPath().Count - 1);
-                            selectedUnit.usedAbility = true;
+                            bool success = selectedUnit.selectedAbility.Effect(selectedUnit, hit.transform.GetComponent<Unit>(), pathFinder.GetNewPath(true).Count - 1);
+                            if (success)
+                            {
+                                selectedUnit.PlayAbilityAnim(selectedUnit.abilityID);
+                                selectedUnit.SetUsedAbilityRpc(true);
+                            }
                         }
-                        if((IsHost && hit.transform.CompareTag("Player1")) || (!IsHost && hit.transform.CompareTag("Player2")))
+                        if ((IsHost && hit.transform.CompareTag("Player1")) || (!IsHost && hit.transform.CompareTag("Player2")))
                         {
                             selectedUnit = hit.transform.GetComponent<Unit>();
                             unitSelected = true;
@@ -106,8 +119,8 @@ public class UnitController : NetworkBehaviour
         }
         StopAllCoroutines();
         path.Clear();
-        path = pathFinder.GetNewPath(coords);
-        if (selectedUnit.remainingSpeed < path.Count - 1)
+        path = pathFinder.GetNewPath(coords, false);
+        if (selectedUnit.GetRemainingSpeed() < path.Count - 1)
         {
             return;
         }
@@ -137,22 +150,31 @@ public class UnitController : NetworkBehaviour
     IEnumerator<WaitForEndOfFrame> FollowPath()
     {
         unitMoving = true;
+        selectedUnit.SetAnimState(AnimState.Walking);
         for (int i = 1; i < path.Count; i++)
         {
             Vector3 startPosition = selectedUnit.transform.position;
             Vector3 endPosition = gridManager.GetPosFromCoords(path[i].coords, selectedUnit.transform.position.y);
 
+            Vector3 lookDirection = (endPosition - startPosition).normalized;
+            if (lookDirection != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                selectedUnit.transform.rotation = targetRotation;
+            }
+
             float travelPercent = 0f;
 
             while(travelPercent < 1f)
             {
-                travelPercent += Time.deltaTime * selectedUnit.movementSpeed;
+                travelPercent += Time.deltaTime * selectedUnit.GetMoveSpeed();
                 selectedUnit.transform.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
                 yield return new WaitForEndOfFrame();
             }
         }
-        selectedUnit.remainingSpeed -= path.Count - 1;
+        selectedUnit.SetRemainingSpeedRpc(selectedUnit.GetRemainingSpeed() - path.Count - 1);
         gridManager.Grid[gridManager.GetCoordsFromPos(selectedUnit.transform.position)].walkable = false;
         unitMoving = false;
+        selectedUnit.SetAnimState(AnimState.Idle);
     }
 }

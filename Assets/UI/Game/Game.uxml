@@ -1,10 +1,8 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Game/Game.uss?fileID=7433441132597879392&amp;guid=d72fbb41b1475824c8c91f2de35c65ea&amp;type=3#Game" />
-    <engine:VisualElement name="Panel" class="panel" style="flex-grow: 1; bottom: auto;">
-        <engine:VisualElement name="ButtonBox" class="buttonBox" style="flex-grow: 1; flex-basis: auto; flex-shrink: 1;">
-            <engine:Button text="End Turn" name="EndTurnButton" class="endTurnBtn" />
-            <engine:Button text="Ability 1" name="Ability1Button" class="abilityButton" />
-            <engine:Button text="Ability 2" name="Ability2Button" class="abilityButton" />
-        </engine:VisualElement>
+    <engine:VisualElement name="ButtonBox" class="buttonBox" style="flex-grow: 1; flex-basis: auto; flex-shrink: 1;">
+        <engine:Button text="End Turn" name="EndTurnButton" class="endTurnBtn" />
+        <engine:Button text="Ability 1" name="Ability1Button" class="abilityButton" />
+        <engine:Button text="Ability 2" name="Ability2Button" class="abilityButton" />
     </engine:VisualElement>
 </engine:UXML>

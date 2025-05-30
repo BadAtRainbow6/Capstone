@@ -31,20 +31,20 @@ public class PathFinding : MonoBehaviour
         }
     }
 
-    public List<Node> GetNewPath()
+    public List<Node> GetNewPath(bool ability)
     {
-        return GetNewPath(startCoords);
+        return GetNewPath(startCoords, ability);
     }
 
-    public List<Node> GetNewPath(Vector2Int coords)
+    public List<Node> GetNewPath(Vector2Int coords, bool ability)
     {
         gridManager.ResetNodes();
 
-        BreadthFirstSearch(coords);
+        BreadthFirstSearch(coords, ability);
         return BuildPath();
     }
 
-    void BreadthFirstSearch(Vector2Int coords)
+    void BreadthFirstSearch(Vector2Int coords, bool ability)
     {
         startNode.walkable = true;
 
@@ -60,7 +60,7 @@ public class PathFinding : MonoBehaviour
         {
             currentNode = frontier.Dequeue();
             currentNode.explored = true;
-            ExploreNeighbors();
+            ExploreNeighbors(ability);
             if(currentNode.coords == targetCoords)
             {
                 isRunning = false;
@@ -68,7 +68,7 @@ public class PathFinding : MonoBehaviour
         }
     }
     
-    void ExploreNeighbors()
+    void ExploreNeighbors(bool ability)
     {
         List<Node> neighbors = new List<Node>();
 
@@ -84,7 +84,7 @@ public class PathFinding : MonoBehaviour
 
         foreach (Node neighbor in neighbors)
         {
-            if(!reached.ContainsKey(neighbor.coords) && neighbor.walkable == true)
+            if(!reached.ContainsKey(neighbor.coords) && ((neighbor.walkable == true && ability == false) || (ability == true)))
             {
                 neighbor.connectedTo = currentNode;
                 reached.Add(neighbor.coords, neighbor);

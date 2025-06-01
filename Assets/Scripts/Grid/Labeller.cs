@@ -4,14 +4,12 @@ using UnityEngine;
 [ExecuteAlways]
 public class Labeller : MonoBehaviour
 {
-    TextMeshPro label;
     public Vector2Int coords;
     GridManager gridManager;
 
     private void Awake()
     {
         gridManager = FindFirstObjectByType<GridManager>();
-        label = GetComponentInChildren<TextMeshPro>();
         DisplayCoords();
     }
 
@@ -27,7 +25,5 @@ public class Labeller : MonoBehaviour
 
         coords.x = Mathf.RoundToInt(transform.position.x / gridManager.UnityGridSize);
         coords.y = Mathf.RoundToInt(transform.position.z / gridManager.UnityGridSize);
-
-        label.text = $"{coords.x}, {coords.y}";
     }
 }
